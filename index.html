@@ -36,33 +36,19 @@
     }
 
     #message {
-      font-size: 1.4rem;
+      font-size: 1rem; /* rimpicciolita */
       margin-top: 20px;
       max-width: 600px;
       text-align: center;
       z-index: 1;
       min-height: 60px;
       white-space: pre-line;
-      color: #ff4d6d;
-      text-shadow:
-        0 0 5px #ff4d6d,
-        0 0 10px #ff4d6d,
-        0 0 20px #ff4d6d,
-        0 0 40px #ff4d6d;
       animation-fill-mode: forwards;
     }
 
     @keyframes textAppear {
-      0% {
-        opacity: 0;
-        transform: translateY(10px);
-        filter: blur(4px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-      }
+      0% { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
     .heart {
@@ -84,14 +70,8 @@
     }
     
     @keyframes fall {
-      from {
-        transform: translateY(-10vh);
-        opacity: 1;
-      }
-      to {
-        transform: translateY(110vh);
-        opacity: 0;
-      }
+      from { transform: translateY(-10vh); opacity: 1; }
+      to { transform: translateY(110vh); opacity: 0; }
     }
 
     @keyframes fadeIn {
@@ -110,19 +90,12 @@
       cursor: pointer;
       z-index: 1;
       transition: transform 0.2s;
-      text-shadow:
-        0 0 5px #ff4d6d,
-        0 0 10px #ff4d6d,
-        0 0 20px #ff4d6d,
-        0 0 40px #ff4d6d;
     }
 
     button:hover {
       transform: scale(1.08);
       background: #ff7998;
     }
-
-    /* NUOVA SCHERMATA FINALE (solo questa è cambiata) */
 
     #finalMessage {
       position: fixed;
@@ -138,7 +111,6 @@
         0 0 20px #ff3b6b,
         0 0 40px #ff3b6b;
       z-index: 10;
-      user-select: none;
       animation: pulse 1.5s infinite alternate;
     }
 
@@ -155,28 +127,24 @@
       color: #ff4d6d;
       font-style: italic;
       font-weight: 600;
-      user-select: none;
       z-index: 10;
-      text-shadow:
-        0 0 3px #ff4d6d,
-        0 0 5px #ff4d6d;
     }
   </style>
 </head>
 <body>
 
-  <h1 class="title">Per il ragazzo migliore al mondo 🤍</h1>
-  <div id="message"></div>
-  <button id="actionButton">Cliccami ❤️</button>
+<h1 class="title">Per il ragazzo migliore al mondo 🤍</h1>
+<div id="message"></div>
+<button id="actionButton">Cliccami ❤️</button>
 
-  <script>
-    const messages = [
-      "a te che sei il mio sorriso preferito",
-      "a te che mi fai sentire amata",
-      "a te che sei il mio tutto"
-    ];
+<script>
+const messages = [
+  "a te che sei il mio sorriso preferito",
+  "a te che mi fai sentire amata",
+  "a te che sei il mio tutto"
+];
 
-    const dedica = `Buon san valentino a noi amoree <33
+const dedica = `Buon san valentino a noi amoree <33
 Quest'anno è anche il nostro primo che lo facciamo e spero ne festeggeremo altri 100 assieme. 
 Anche se non sono li con te di persona, ti volevo dare un regalino, perciò mi era venuto in mente di fare questo, anche per dimostrarti che tutto quello che fai mi interessa e che non è inutile mostrarmi le cose, anche se magari non ci capisco;
 Ma non è questo il punto importante.
@@ -189,115 +157,96 @@ E quindi niente amore, volevo ringraziarti per ogni piccolo gesto che mi fai sen
 Buon primo san valentino a noi amoremio,
 Ti amo tanto tanto tanto tanto tanto tanto tanto🤍`;
 
+let msgIndex = 0;
+let clickCount = 0;
 
-    let msgIndex = 0;
-    let clickCount = 0;
+const button = document.getElementById('actionButton');
+const messageEl = document.getElementById('message');
+const titleEl = document.querySelector('.title');
 
-    const button = document.getElementById('actionButton');
-    const messageEl = document.getElementById('message');
-    const titleEl = document.querySelector('.title');
+function updateHeartsColor(toWhite) {
+  document.querySelectorAll('.heart').forEach(h => {
+    toWhite ? h.classList.add('white-hearts') : h.classList.remove('white-hearts');
+  });
+}
 
-    function updateHeartsColor(toWhite) {
-      document.querySelectorAll('.heart').forEach(h => {
-        if(toWhite) {
-          h.classList.add('white-hearts');
-        } else {
-          h.classList.remove('white-hearts');
-        }
-      });
+function typeWriter(text, i = 0) {
+  if (i < text.length) {
+    messageEl.textContent += text.charAt(i);
+    setTimeout(() => typeWriter(text, i + 1), 25);
+  }
+}
+
+function nextMessage() {
+  if (clickCount < 3) {
+    messageEl.textContent = "";
+    typeWriter(messages[msgIndex]);
+    msgIndex = (msgIndex + 1) % messages.length;
+    clickCount++;
+    if (clickCount === 3) {
+      button.textContent = "Leggi la dedica ❤️";
     }
+  } else {
+    messageEl.textContent = "";
+    messageEl.style.animation = 'textAppear 3s ease forwards';
+    typeWriter(dedica);
+    button.style.display = "none";
+    titleEl.style.display = "none";
 
-    function typeWriter(text, i = 0) {
-      if (i < text.length) {
-        messageEl.textContent += text.charAt(i);
-        setTimeout(() => typeWriter(text, i + 1), 35);
-      }
-    }
+    updateHeartsColor(true);
 
-    function nextMessage() {
-      if (clickCount < 3) {
-        messageEl.textContent = "";
-        typeWriter(messages[msgIndex]);
-        msgIndex = (msgIndex + 1) % messages.length;
-        clickCount++;
-        if (clickCount === 3) {
-          button.textContent = "Leggi la dedica ❤️";
-        }
-      } else {
-        messageEl.textContent = "";
-        messageEl.style.animation = 'none';
-        void messageEl.offsetWidth;
-        messageEl.style.animation = 'textAppear 3s ease forwards';
-        typeWriter(dedica);
-        button.style.display = "none";
-        titleEl.style.display = "none";
+    const delay = dedica.length * 25 + 500;
+    setTimeout(() => {
+      const surpriseBtn = document.createElement("button");
+      surpriseBtn.textContent = "Sorpresa finale";
+      document.body.appendChild(surpriseBtn);
 
-        updateHeartsColor(true);
+      surpriseBtn.addEventListener("click", () => {
+        let countdown = 3;
+        surpriseBtn.textContent = `Questa lettera sparirà tra ${countdown} secondi`;
+        surpriseBtn.disabled = true;
 
-        const delay = dedica.length * 35 + 500;
-        setTimeout(() => {
-          const surpriseBtn = document.createElement("button");
-          surpriseBtn.textContent = "Sorpresa finale";
-          surpriseBtn.style.marginTop = "20px";
-
-          document.body.appendChild(surpriseBtn);
-
-          surpriseBtn.addEventListener("click", () => {
-            let countdown = 3;
-            surpriseBtn.disabled = true;
-            surpriseBtn.style.cursor = "default";
+        const intervalId = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
             surpriseBtn.textContent = `Questa lettera sparirà tra ${countdown} secondi`;
+          } else {
+            clearInterval(intervalId);
+            messageEl.style.display = "none";
+            surpriseBtn.style.display = "none";
+            updateHeartsColor(false);
 
-            const intervalId = setInterval(() => {
-              countdown--;
-              if (countdown > 0) {
-                surpriseBtn.textContent = `Questa lettera sparirà tra ${countdown} secondi`;
-              } else {
-                clearInterval(intervalId);
+            const finalMsg = document.createElement("div");
+            finalMsg.id = "finalMessage";
+            finalMsg.innerHTML = `Ma quello<br>che provo<br>non scade<br><div style="font-size:5rem;">🤍</div>`;
+            document.body.appendChild(finalMsg);
 
-                messageEl.style.display = "none";
-                surpriseBtn.style.display = "none";
-                updateHeartsColor(false);
+            const loveNote = document.createElement("div");
+            loveNote.id = "smallLoveNote";
+            loveNote.textContent = "ti amo scemo, dalla tua jenny<3";
+            document.body.appendChild(loveNote);
+          }
+        }, 1000);
+      });
+    }, delay);
+  }
+}
 
-                const finalMsg = document.createElement("div");
-                finalMsg.id = "finalMessage";
-                finalMsg.innerHTML = `
-Ma quello<br>
-che provo<br>
-non scade
-<div style="font-size:5rem;margin-top:15px;filter:drop-shadow(0 0 10px white);">🤍</div>
-`;
-                document.body.appendChild(finalMsg);
+button.addEventListener("click", nextMessage);
 
-                const loveNote = document.createElement("div");
-                loveNote.id = "smallLoveNote";
-                loveNote.textContent = "ti amo scemo, dalla tua jenny<3";
-                document.body.appendChild(loveNote);
-              }
-            }, 1000);
-          });
-        }, delay);
-      }
-    }
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.textContent = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+  heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}
 
-    button.addEventListener("click", nextMessage);
-
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.textContent = "❤️";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-      heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
-      document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 6000);
-    }
-
-    setInterval(createHeart, 300);
-  </script>
+setInterval(createHeart, 300);
+</script>
 
 </body>
 </html>
